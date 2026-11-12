@@ -20,7 +20,7 @@ from werkzeug.utils import secure_filename
 # APPLICATION CONFIGURATION
 # ==========================================
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='.')
 
 app.config["SECRET_KEY"] = os.environ.get(
     "TAWASSOLI_SECRET_KEY",
