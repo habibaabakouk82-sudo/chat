@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAWASSOLI | Profil de {{ profile_user.username }}</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #0b0b10;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background: #17151e;
+    border-bottom: 1px solid #302635;
+    padding: 18px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: #ff91c8;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar a:not(.logo) {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.container {
+    max-width: 850px;
+    margin: 35px auto;
+    padding: 15px;
+}
+
+.card {
+    background: #17151e;
+    border: 1px solid #302635;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.profile-header {
+    text-align: center;
+}
+
+.avatar {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ff91c8;
+}
+
+.initial {
+    width: 115px;
+    height: 115px;
+    margin: auto;
+    border-radius: 50%;
+    background: #35263a;
+    color: #ff91c8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 45px;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+.username, .muted {
+    color: #aaa0ad;
+}
+
+.bio {
+    margin: 18px auto;
+    max-width: 500px;
+    line-height: 1.6;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 20px 0;
+}
+
+.stat strong {
+    display: block;
+    color: #ff91c8;
+    font-size: 22px;
+}
+
+.btn {
+    display: inline-block;
+    background: #ff91c8;
+    color: #1a1018;
+    padding: 11px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: #ffb6dc;
+}
+
+/* أزرار الحظر وإلغاء الحظر */
+.btn-block {
+    background: rgba(255, 75, 100, 0.15);
+    color: #ff6b81;
+    border: 1px solid #ff6b81;
+}
+
+.btn-block:hover {
+    background: #ff4757;
+    color: white;
+}
+
+.btn-unblock {
+    background: #25212d;
+    color: #ff91c8;
+    border: 1px solid #ff91c8;
+}
+
+.btn-unblock:hover {
+    background: #ff91c8;
+    color: #17151e;
+}
+
+.actions-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.post {
+    border-bottom: 1px solid #302635;
+    padding: 18px 0;
+}
+
+.post:last-child {
+    border-bottom: none;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 450px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-top: 12px;
+    background: #09090d;
+}
+
+.comment {
+    background: #100f16;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+input {
+    width: 100%;
+    background: #100f16;
+    border: 1px solid #302635;
+    color: white;
+    padding: 11px;
+    border-radius: 8px;
+}
+
+@media(max-width: 600px) {
+    .stats { gap: 20px; }
+    .navbar { padding: 15px; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="{{ url_for('home') }}" class="logo">TAWASSOLI.</a>
+
+    <div>
+        <a href="{{ url_for('home') }}">Accueil</a>
+        <a href="{{ url_for('logout') }}">Déconnexion</a>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="card profile-header">
+
+        {% if profile_user.profile_picture %}
+            <img class="avatar"
+                 src="{{ url_for('static', filename='uploads/profiles/' + profile_user.profile_picture) }}"
+                 alt="Photo de profil">
+        {% else %}
+            <div class="initial">
+                {{ profile_user.username[0]|upper }}
+            </div>
+        {% endif %}
+
+        <h1>
+            {{ profile_user.display_name or profile_user.username }}
+        </h1>
+
+        <div class="username">
+            @{{ profile_user.username }}
+        </div>
+
+        <p class="bio">
+            {{ profile_user.bio or "Bienvenue sur mon profil TAWASSOLI !" }}
+        </p>
+
+        <div class="stats">
+            <div class="stat">
+                <strong>{{ posts_count }}</strong>
+                Publications
+            </div>
+
+            <div class="stat">
+                <strong>{{ friends_count }}</strong>
+                Amis
+            </div>
+        </div>
+
+        <!-- أزرار التحكم -->
+        <div class="actions-group">
+            {% if is_owner %}
+                <a class="btn" href="{{ url_for('edit_profile') }}">
+                    ✏️ Modifier mon profil
+                </a>
+            {% else %}
+                <!-- إرسال رسالة -->
+                <a class="btn" href="{{ url_for('chat', friend_id=profile_user.id) }}">
+                    💬 Envoyer un message
+                </a>
+
+                <!-- زر الحظر أو إلغاء الحظر -->
+                {% if is_blocked_by_me %}
+                    <form method="POST" action="{{ url_for('unblock_user', user_id=profile_user.id) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous débloquer {{ profile_user.username }} ?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-unblock" type="submit">
+                            🔓 Débloquer
+                        </button>
+                    </form>
+                {% else %}
+                    <form method="POST" action="{{ url_for('block_user', user_id=profile_user.id) }}" style="display:inline;" onsubmit="return confirm('Voulez-vous vraiment bloquer {{ profile_user.username }} ?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-block" type="submit">
+                            🚫 Bloquer
+                        </button>
+                    </form>
+                {% endif %}
+
+                <a class="btn" style="background:#25212d; color:#bdb6c5;" href="{{ url_for('home') }}">
+                    Retour
+                </a>
+            {% endif %}
+        </div>
+
+    </section>
+
+    <section class="card">
+        <h2>📸 Publications</h2>
+
+        {% for post in posts %}
+            <article class="post">
+                <div class="muted">
+                    {{ post.created_at }}
+                </div>
+
+                {% if post.content %}
+                    <p style="white-space:pre-wrap;">{{ post.content }}</p>
+                {% endif %}
+
+                {% if post.image_filename %}
+                    <img class="post-image"
+                         src="{{ url_for('static', filename='uploads/posts/' + post.image_filename) }}"
+                         alt="Image de publication">
+                {% endif %}
+
+                <p class="muted">
+                    ❤️ {{ post.likes_count }} • 💬 {{ post.comments_count }}
+                </p>
+
+                {% if is_owner %}
+                    <form method="POST"
+                          action="{{ url_for('delete_post', post_id=post.id) }}"
+                          onsubmit="return confirm('Supprimer cette publication ?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn" style="background:#542438; color:white;" type="submit">
+                            Supprimer
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% for comment in post.comments %}
+                    <div class="comment">
+                        <strong>{{ comment.display_name or comment.username }}</strong>
+                        <p>{{ comment.content }}</p>
+                    </div>
+                {% endfor %}
+            </article>
+        {% else %}
+            <p class="muted">
+                Aucune publication pour le moment.
+            </p>
+        {% endfor %}
+    </section>
+
+</main>
+
+</body>
+</html>

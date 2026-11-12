@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche | TAWASSOLI</title>
+
+    <style>
+        :root {
+            --pink: #ff91c8;
+            --pink2: #ffb6dc;
+            --bg: #0b0b10;
+            --card: #17151e;
+            --text: #ffffff;
+            --muted: #aaa3b2;
+            --border: #302936;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        nav {
+            min-height: 70px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 7%;
+            gap: 15px;
+        }
+
+        .logo {
+            color: var(--pink);
+            font-size: 25px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: var(--pink);
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title h1 {
+            color: var(--pink);
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            color: var(--muted);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: var(--card);
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 0;
+            background: #24202b;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-box input:focus {
+            border-color: var(--pink);
+        }
+
+        button {
+            background: var(--pink);
+            color: #21101a;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--pink2);
+        }
+
+        .results-title {
+            color: var(--pink);
+            margin-bottom: 15px;
+            font-size: 19px;
+        }
+
+        .user-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 18px;
+            margin-bottom: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            transition: 0.2s;
+        }
+
+        .user-card:hover {
+            border-color: var(--pink);
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 0;
+        }
+
+        .avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--pink);
+            background: #302936;
+            flex-shrink: 0;
+        }
+
+        .avatar-placeholder {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #302936;
+            border: 2px solid var(--pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            flex-shrink: 0;
+        }
+
+        .username {
+            font-weight: bold;
+            margin-bottom: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .display-name {
+            color: var(--muted);
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .profile-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--pink);
+            border: 1px solid var(--pink);
+            padding: 10px 13px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .profile-btn:hover {
+            background: var(--pink);
+            color: #21101a;
+        }
+
+        .status {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .empty {
+            text-align: center;
+            background: var(--card);
+            padding: 35px 15px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            line-height: 2;
+        }
+
+        .empty .icon {
+            font-size: 40px;
+            display: block;
+        }
+
+        .flash {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 9px;
+            background: #302335;
+            color: var(--pink2);
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+            }
+
+            nav a {
+                margin-left: 8px;
+                font-size: 12px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .user-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                width: 100%;
+            }
+
+            .title h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">TAWASSOLI</div>
+
+    <div>
+        <a href="{{ url_for('home') }}">Accueil</a>
+        <a href="{{ url_for('home') }}#friends">Amis</a>
+        <a href="{{ url_for('home') }}">Retour</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="title">
+        <h1>🔎 Découvrir des personnes</h1>
+        <p>Recherchez vos amis et connectez-vous avec eux.</p>
+    </div>
+
+    <form class="search-box" method="GET"
+          action="{{ url_for('search_users') }}">
+
+        <input
+            type="search"
+            name="q"
+            placeholder="Nom d'utilisateur ou nom complet..."
+            value="{{ query }}"
+            required
+        >
+
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if query %}
+
+        <h2 class="results-title">
+            Résultats pour : "{{ query }}"
+        </h2>
+
+        {% if results %}
+
+            {% for result in results %}
+
+                <div class="user-card">
+
+                    <div class="user-info">
+
+                        {% if result.profile_picture %}
+
+                            <img
+                                class="avatar"
+                                src="{{ result.profile_picture }}"
+                                alt="Photo de profil"
+                            >
+
+                        {% else %}
+
+                            <div class="avatar-placeholder">👤</div>
+
+                        {% endif %}
+
+                        <div>
+                            <div class="username">
+                                @{{ result.username }}
+                            </div>
+
+                            <div class="display-name">
+                                {{ result.display_name or result.username }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="actions">
+
+                        <a class="profile-btn"
+                           href="{{ url_for('profile', user_id=result.id) }}">
+                            Profil
+                        </a>
+
+                        {% if result.is_friend %}
+
+                            <span class="status">✓ Déjà ami(e)</span>
+
+                        {% elif result.request_sent %}
+
+                            <span class="status">⏳ Demande envoyée</span>
+
+                        {% elif result.request_received %}
+
+                            <span class="status">
+                                Demande reçue — consultez vos demandes
+                            </span>
+
+                        {% else %}
+
+                            <form method="POST"
+                                  action="{{ url_for('add_friend') }}">
+
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                >
+
+                                <input
+                                    type="hidden"
+                                    name="username"
+                                    value="{{ result.username }}"
+                                >
+
+                                <button type="submit">+ Ajouter</button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+                <span class="icon">🔍</span>
+                Aucun utilisateur trouvé.
+                <br>
+                Essayez un autre nom.
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <div class="empty">
+            <span class="icon">👥</span>
+            Entrez un nom d'utilisateur pour découvrir des personnes.
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

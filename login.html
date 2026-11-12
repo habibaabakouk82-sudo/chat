@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TAWASSOLI | Connexion</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #0b0b10;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            padding: 35px 25px;
+            background: #17151e;
+            border: 1px solid #302435;
+            border-radius: 22px;
+            text-align: center;
+        }
+
+        .logo {
+            color: #ff91c8;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #bdb6c5;
+            margin-bottom: 28px;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #39303f;
+            border-radius: 10px;
+            background: #0b0b10;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #ff91c8;
+            color: #17151e;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ffb6dc;
+        }
+
+        a {
+            color: #ff91c8;
+            text-decoration: none;
+        }
+
+        .footer {
+            margin-top: 24px;
+            color: #bdb6c5;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #302435;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="card">
+
+        <div class="logo">TAWASSOLI</div>
+
+        <p class="subtitle">Connect Together 💗</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="POST">
+
+            <!-- CSRF SECURITY TOKEN -->
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Adresse e-mail"
+                autocomplete="email"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Mot de passe"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit">
+                Se connecter
+            </button>
+
+        </form>
+
+        <p class="footer">
+            Pas encore de compte ?
+
+            <a href="{{ url_for('register') }}">
+                Créer un compte
+            </a>
+        </p>
+
+    </main>
+
+</body>
+</html>
+

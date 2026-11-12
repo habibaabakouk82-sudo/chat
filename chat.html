@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>TAWASSOLI | Conversation avec {{ friend["username"] }}</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #0b0b10;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            background: #17151e;
+            border-bottom: 1px solid #302435;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        a { color: #ff91c8; text-decoration: none; }
+
+        .back {
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #25212d;
+            transition: 0.2s;
+        }
+        .back:hover { background: #39303f; }
+
+        .friend-info { display: flex; align-items: center; gap: 12px; }
+
+        .friend-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ff91c8;
+            background: #25212d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #ff91c8;
+        }
+
+        .friend-name { color: #ff91c8; font-weight: bold; font-size: 16px; }
+
+        /* شريط يكتب الآن */
+        #typing-indicator {
+            display: none;
+            padding: 5px 20px;
+            font-size: 11.5px;
+            color: #ff91c8;
+            background: #17151e;
+            border-bottom: 1px solid #292130;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+        /* زر الحظر في الهيدر */
+        .btn-block-header {
+            background: rgba(255, 75, 100, 0.12);
+            color: #ff6b81;
+            border: 1px solid rgba(255, 107, 129, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-block-header:hover { background: #ff4757; color: white; }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 850px;
+            height: calc(100vh - 66px);
+            margin: auto;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            width: fit-content;
+            max-width: 78%;
+            padding: 10px 14px;
+            background: #25212d;
+            border-radius: 16px 16px 16px 4px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: fadeIn 0.15s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.mine {
+            align-self: flex-end;
+            background: #ff91c8;
+            color: #17151e;
+            border-radius: 16px 16px 4px 16px;
+        }
+
+        .content { font-size: 14.5px; line-height: 1.4; }
+
+        /* صور الشات */
+        .chat-img {
+            max-width: 100%;
+            max-height: 260px;
+            border-radius: 12px;
+            margin-top: 6px;
+            display: block;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .chat-img:hover { opacity: 0.95; }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            margin-top: 5px;
+            font-size: 10.5px;
+            opacity: 0.85;
+        }
+        .message.mine .message-meta { color: #2b1122; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-weight: bold;
+            font-size: 10.5px;
+        }
+        .status-badge.seen {
+            color: #123d2b;
+            background: rgba(255, 255, 255, 0.45);
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        /* صندوق الإرسال */
+        form.send-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 18px;
+            background: #17151e;
+            border-top: 1px solid #302435;
+            position: relative;
+        }
+
+        /* زر الكاميرا */
+        .btn-attach {
+            background: #25212d;
+            color: #ff91c8;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #39303f;
+            flex-shrink: 0;
+        }
+        .btn-attach:hover { background: #39303f; }
+
+        /* شريط معاينة الصورة قبل الإرسال */
+        #preview-bar {
+            display: none;
+            padding: 8px 18px;
+            background: #1a1622;
+            border-top: 1px solid #302435;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: #ff91c8;
+        }
+        #preview-bar img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; }
+        #remove-image { cursor: pointer; color: #ff6b81; font-weight: bold; font-size: 14px; margin-left: auto; }
+
+        input#message-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #39303f;
+            border-radius: 25px;
+            outline: none;
+            background: #0b0b10;
+            color: white;
+            font-size: 14.5px;
+        }
+        input#message-input:focus { border-color: #ff91c8; }
+
+        button.btn-send {
+            padding: 0 22px;
+            height: 42px;
+            border: none;
+            border-radius: 25px;
+            background: #ff91c8;
+            color: #17151e;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        button.btn-send:hover { background: #ffb6dc; }
+        button.btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        #empty-chat { margin: auto; text-align: center; color: #8c8296; font-size: 14px; }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a class="back" href="{{ url_for('messages') }}" title="Retour">←</a>
+
+        <div class="friend-info">
+            {% if friend["profile_picture"] %}
+                <img class="friend-avatar" src="{{ url_for('static', filename='uploads/profiles/' + friend['profile_picture']) }}" alt="{{ friend['username'] }}">
+            {% else %}
+                <div class="friend-avatar">{{ friend["username"][:1].upper() }}</div>
+            {% endif %}
+
+            <div>
+                <div class="friend-name">{{ friend["display_name"] if friend["display_name"] else friend["username"] }}</div>
+                <div style="font-size:11.5px; color:#bdb6c5;">@{{ friend["username"] }}</div>
+            </div>
+        </div>
+
+        <!-- زر الحظر -->
+        <div style="margin-left: auto;">
+            <form method="POST" action="{{ url_for('block_user', user_id=friend['id']) }}" onsubmit="return confirm('Voulez-vous vraiment bloquer {{ friend.username }} ?');">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn-block-header">🚫 Bloquer</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- شريط يكتب الآن -->
+    <div id="typing-indicator">
+        ✍️ <span id="typing-user">{{ friend["username"] }}</span> est en train d'écrire...
+    </div>
+
+    <!-- CHAT CONTAINER -->
+    <main class="chat-container" id="chat-app" data-friend-id="{{ friend['id'] }}" data-my-id="{{ user['id'] }}">
+
+        <!-- MESSAGES -->
+        <div id="messages">
+            {% for message in messages %}
+                <div class="message {% if message['sender_id'] == user['id'] %}mine{% endif %}" id="msg-{{ message['id'] }}">
+                    
+                    {% if message["content"] %}
+                        <div class="content">{{ message["content"] }}</div>
+                    {% endif %}
+
+                    {% if message["image_filename"] %}
+                        <img src="{{ url_for('static', filename='uploads/chat/' + message['image_filename']) }}" class="chat-img" onclick="window.open(this.src)" alt="Photo">
+                    {% endif %}
+
+                    <div class="message-meta">
+                        <span class="time">{{ message["created_at"][11:16] if message["created_at"] and message["created_at"]|length >= 16 else message["created_at"] }}</span>
+                        
+                        {% if message['sender_id'] == user['id'] %}
+                            {% if message['is_read'] %}
+                                <span class="status-badge seen">✓✓ Vu {{ message['read_at'][11:16] if message['read_at'] else '' }}</span>
+                            {% else %}
+                                <span class="status-badge sent">✓ Envoyé</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div id="empty-chat">
+                    👋 Aucun message. Discute avec <b>{{ friend["username"] }}</b> !
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- بار معاينة الصورة قبل إرسالها -->
+        <div id="preview-bar">
+            <img id="preview-img" src="" alt="Aperçu">
+            <span>Image prête à être envoyée</span>
+            <span id="remove-image" title="Annuler">✖</span>
+        </div>
+
+        <!-- MESSAGE FORM -->
+        <form id="message-form" class="send-box">
+            <!-- زر الكاميرا -->
+            <label for="image-input" class="btn-attach" title="Envoyer une photo">📷</label>
+            <input type="file" id="image-input" accept="image/*" style="display:none;">
+
+            <input type="text" id="message-input" placeholder="Écris ton message..." autocomplete="off">
+            <button id="send-button" class="btn-send" type="submit">Envoyer</button>
+        </form>
+
+    </main>
+
+    <!-- SCRIPT REAL-TIME + PHOTOS + TYPING -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const chatApp = document.getElementById("chat-app");
+            const messagesContainer = document.getElementById("messages");
+            const messageForm = document.getElementById("message-form");
+            const messageInput = document.getElementById("message-input");
+            const imageInput = document.getElementById("image-input");
+            const previewBar = document.getElementById("preview-bar");
+            const previewImg = document.getElementById("preview-img");
+            const removeImage = document.getElementById("remove-image");
+            const sendButton = document.getElementById("send-button");
+            const typingIndicator = document.getElementById("typing-indicator");
+
+            const friendId = parseInt(chatApp.dataset.friendId, 10);
+            const myId = parseInt(chatApp.dataset.myId, 10);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
+
+            let selectedFile = null;
+            let lastTypingSent = 0;
+
+            function scrollToBottom() {
+                messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: "smooth" });
+            }
+            scrollToBottom();
+
+            function extractTime(t) {
+                return (t && t.length >= 16) ? t.substring(11, 16) : (t || "");
+            }
+
+            // إرسال إشعار أنني أكتب الآن
+            messageInput.addEventListener("input", () => {
+                const now = Date.now();
+                if (now - lastTypingSent > 2000) {
+                    lastTypingSent = now;
+                    fetch(`/api/typing/${friendId}`, {
+                        method: "POST",
+                        headers: { "X-CSRFToken": csrfToken, "Content-Type": "application/json" },
+                        body: JSON.stringify({ csrf_token: csrfToken })
+                    }).catch(() => {});
+                }
+            });
+
+            // اختيار صورة
+            imageInput.addEventListener("change", (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    selectedFile = e.target.files[0];
+                    previewImg.src = URL.createObjectURL(selectedFile);
+                    previewBar.style.display = "flex";
+                }
+            });
+
+            removeImage.addEventListener("click", () => {
+                selectedFile = null;
+                imageInput.value = "";
+                previewBar.style.display = "none";
+            });
+
+            // إنشاء عنصر الرسالة
+            function createMessageElement(msg) {
+                const isMine = (msg.sender_id === myId);
+                const sendTime = extractTime(msg.created_at);
+                const readTime = extractTime(msg.read_at);
+
+                const msgDiv = document.createElement("div");
+                msgDiv.className = `message ${isMine ? "mine" : ""}`;
+                msgDiv.id = `msg-${msg.id}`;
+
+                let statusHtml = "";
+                if (isMine) {
+                    statusHtml = msg.is_read
+                        ? `<span class="status-badge seen">✓✓ Vu ${readTime}</span>`
+                        : `<span class="status-badge sent">✓ Envoyé</span>`;
+                }
+
+                let imgHtml = "";
+                if (msg.image_filename) {
+                    imgHtml = `<img src="/static/uploads/chat/${msg.image_filename}" class="chat-img" onclick="window.open(this.src)" alt="Photo">`;
+                }
+
+                let contentHtml = msg.content ? `<div class="content"></div>` : "";
+
+                msgDiv.innerHTML = `
+                    ${contentHtml}
+                    ${imgHtml}
+                    <div class="message-meta">
+                        <span class="time">${sendTime}</span>
+                        ${statusHtml}
+                    </div>
+                `;
+
+                if (msg.content) {
+                    msgDiv.querySelector(".content").textContent = msg.content;
+                }
+
+                return msgDiv;
+            }
+
+            // جلب الرسائل وفحص "يكتب الآن"
+            async function fetchMessages() {
+                try {
+                    const response = await fetch(`/api/messages/${friendId}`);
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+
+                    // حالة "يكتب الآن"
+                    if (data.is_typing) {
+                        typingIndicator.style.display = "block";
+                    } else {
+                        typingIndicator.style.display = "none";
+                    }
+
+                    if (!data.messages) return;
+
+                    let shouldScroll = false;
+                    const emptyChat = document.getElementById("empty-chat");
+                    if (data.messages.length > 0 && emptyChat) emptyChat.remove();
+
+                    data.messages.forEach(msg => {
+                        const existing = document.getElementById(`msg-${msg.id}`);
+                        if (!existing) {
+                            messagesContainer.appendChild(createMessageElement(msg));
+                            shouldScroll = true;
+                        } else if (msg.sender_id === myId && msg.is_read) {
+                            const badge = existing.querySelector(".status-badge");
+                            if (badge && !badge.classList.contains("seen")) {
+                                badge.className = "status-badge seen";
+                                badge.innerHTML = `✓✓ Vu ${extractTime(msg.read_at)}`;
+                            }
+                        }
+                    });
+
+                    if (shouldScroll) scrollToBottom();
+
+                } catch (e) {
+                    console.error("Erreur de mise à jour :", e);
+                }
+            }
+
+            setInterval(fetchMessages, 2000);
+
+            // إرسال رسالة
+            messageForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const text = messageInput.value.trim();
+                if (!text && !selectedFile) return;
+
+                sendButton.disabled = true;
+
+                try {
+                    const formData = new FormData();
+                    if (text) formData.append("content", text);
+                    if (selectedFile) formData.append("image", selectedFile);
+                    formData.append("csrf_token", csrfToken);
+
+                    const response = await fetch(`/api/messages/${friendId}`, {
+                        method: "POST",
+                        headers: { "X-CSRFToken": csrfToken },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const newMsg = await response.json();
+                        messageInput.value = "";
+                        selectedFile = null;
+                        imageInput.value = "";
+                        previewBar.style.display = "none";
+
+                        const emptyChat = document.getElementById("empty-chat");
+                        if (emptyChat) emptyChat.remove();
+
+                        messagesContainer.appendChild(createMessageElement(newMsg));
+                        scrollToBottom();
+                    } else {
+                        const err = await response.json();
+                        alert(err.error || "Erreur d'envoi.");
+                    }
+                } catch (err) {
+                    alert("Erreur lors de l'envoi.");
+                } finally {
+                    sendButton.disabled = false;
+                    messageInput.focus();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier le profil | TAWASSOLI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0b10;
+            color: #fff;
+            min-height: 100vh;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: #17151e;
+            padding: 30px;
+            border-radius: 18px;
+            border: 1px solid #302637;
+        }
+
+        h1 {
+            color: #ff91c8;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff91c8;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            color: #ffb6dc;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border-radius: 10px;
+            border: 1px solid #39313f;
+            background: #0b0b10;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #ff91c8;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: #0b0b10;
+            border-radius: 10px;
+            color: #ccc;
+            border: 1px solid #39313f;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button,
+        .cancel {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .save {
+            background: #ff91c8;
+            color: #17151e;
+        }
+
+        .save:hover {
+            background: #ffb6dc;
+        }
+
+        .cancel {
+            background: #302637;
+            color: white;
+        }
+
+        .cancel:hover {
+            background: #44354c;
+        }
+
+        .username {
+            color: #aaa;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Modifier le profil</h1>
+    <p class="subtitle">Personnalise ton profil TAWASSOLI 🌸</p>
+
+    <p class="username">
+        @{{ user.username }}
+    </p>
+
+    <form method="POST" enctype="multipart/form-data">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="avatar-section">
+
+            {% if user.profile_picture %}
+                <img
+                    id="avatarPreview"
+                    class="avatar"
+                    src="{{ url_for('static', filename='uploads/profiles/' ~ user.profile_picture) }}"
+                    alt="Photo de profil"
+                >
+            {% else %}
+                <img
+                    id="avatarPreview"
+                    class="avatar"
+                    src="https://placehold.co/130x130/17151e/ff91c8?text=TA"
+                    alt="Photo de profil"
+                >
+            {% endif %}
+
+        </div>
+
+        <div class="form-group">
+            <label for="profile_picture">Photo de profil</label>
+
+            <input
+                type="file"
+                id="profile_picture"
+                name="profile_picture"
+                accept="image/*"
+                onchange="previewImage(event)"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="display_name">Nom complet</label>
+
+            <input
+                type="text"
+                id="display_name"
+                name="display_name"
+                value="{{ user.display_name or '' }}"
+                maxlength="50"
+                placeholder="Ton nom complet"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="bio">Biographie</label>
+
+            <textarea
+                id="bio"
+                name="bio"
+                maxlength="250"
+                placeholder="Parle un peu de toi..."
+            >{{ user.bio or '' }}</textarea>
+        </div>
+
+        <div class="buttons">
+
+            <button type="submit" class="save">
+                Enregistrer
+            </button>
+
+            <a href="{{ url_for('profile', user_id=user.id) }}" class="cancel">
+                Annuler
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    function previewImage(event) {
+        const file = event.target.files[0];
+
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                document.getElementById("avatarPreview").src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+</body>
+</html>
+

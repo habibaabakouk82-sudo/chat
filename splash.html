@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0b10">
+
+    <title>TAWASSOLI | Connect Together</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(255, 145, 200, 0.18),
+                    transparent 45%
+                ),
+                #0b0b10;
+        }
+
+        .splash {
+            text-align: center;
+            animation: appear 1s ease forwards;
+        }
+
+        .logo-wrap {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+
+            border-radius: 35px;
+
+            background: linear-gradient(
+                145deg,
+                #ff91c8,
+                #a83e82
+            );
+
+            box-shadow:
+                0 0 35px rgba(255, 145, 200, 0.5),
+                inset 0 0 20px rgba(255,255,255,0.15);
+
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        .logo {
+            font-size: 65px;
+            font-weight: bold;
+            color: #160d16;
+        }
+
+        .orbit {
+            position: absolute;
+            inset: -17px;
+
+            border: 1px solid rgba(255, 145, 200, 0.5);
+            border-radius: 42px;
+
+            animation: spin 7s linear infinite;
+        }
+
+        .orbit::before,
+        .orbit::after {
+            content: "";
+
+            position: absolute;
+            width: 12px;
+            height: 12px;
+
+            border-radius: 50%;
+            background: #ffb6dc;
+
+            box-shadow: 0 0 15px #ff91c8;
+        }
+
+        .orbit::before {
+            top: 12px;
+            left: 15px;
+        }
+
+        .orbit::after {
+            bottom: 15px;
+            right: 12px;
+        }
+
+        h1 {
+            font-size: 40px;
+            letter-spacing: 5px;
+        }
+
+        h1 span {
+            color: #ff91c8;
+        }
+
+        p {
+            margin-top: 12px;
+            margin-bottom: 30px;
+
+            color: #c9bdc7;
+            letter-spacing: 3px;
+            font-size: 14px;
+        }
+
+        .loader {
+            width: 150px;
+            height: 4px;
+
+            margin: auto;
+
+            background: #302330;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .loader::after {
+            content: "";
+
+            display: block;
+            width: 45%;
+            height: 100%;
+
+            background: #ff91c8;
+            border-radius: 10px;
+
+            animation: loading 2.4s ease-in-out infinite;
+        }
+
+        .skip {
+            display: inline-block;
+            margin-top: 25px;
+
+            color: #ffb6dc;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .skip:hover {
+            color: white;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(-3deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(3deg);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes loading {
+            from {
+                transform: translateX(-110%);
+            }
+
+            to {
+                transform: translateX(250%);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <main class="splash">
+
+        <div class="logo-wrap">
+            <div class="orbit"></div>
+            <div class="logo">T</div>
+        </div>
+
+        <h1>TAWA<span>SSOLI</span></h1>
+
+        <p>CONNECT TOGETHER</p>
+
+        <div class="loader"></div>
+
+        <a class="skip" href="{{ url_for('login_page') }}">
+            Passer l’introduction
+        </a>
+
+    </main>
+
+    <script>
+        setTimeout(function () {
+
+            window.location.replace(
+                "{{ url_for('login_page') }}"
+            );
+
+        }, 2600);
+    </script>
+
+</body>
+</html>

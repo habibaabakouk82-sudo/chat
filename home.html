@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAWASSOLI | Connect Together</title>
+
+<style>
+:root {
+    --pink: #ff91c8;
+    --pink2: #ffb6dc;
+    --bg: #0b0b10;
+    --card: #17151e;
+    --border: #302635;
+    --text: #ffffff;
+    --muted: #aaa0ad;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button, input, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* الشارة الحمراء */
+.badge-red {
+    background: #ff4757;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 7px;
+    font-size: 11px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin-left: 5px;
+    box-shadow: 0 0 6px rgba(255, 71, 87, 0.4);
+}
+
+/* NAVBAR */
+
+.navbar {
+    min-height: 65px;
+    background: #111018;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px 5%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: bold;
+    color: var(--pink);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.nav-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    max-width: 340px;
+}
+
+.nav-search input {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    padding: 11px 13px;
+    background: #17151e;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+}
+
+.nav-search input:focus {
+    border-color: var(--pink);
+}
+
+.nav-search button {
+    padding: 11px 14px;
+    border: none;
+    border-radius: 10px;
+    background: var(--pink);
+    color: #1a1018;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.nav-search button:hover {
+    background: var(--pink2);
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    color: var(--pink);
+}
+
+.profile-link {
+    background: var(--pink);
+    color: #1a1018 !important;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* MAIN LAYOUT */
+
+.container {
+    max-width: 1150px;
+    margin: 25px auto;
+    padding: 0 15px;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 600px) 250px;
+    gap: 20px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 17px;
+    margin-bottom: 18px;
+}
+
+h2, h3 {
+    margin-top: 0;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* BUTTONS */
+
+.btn {
+    border: none;
+    background: var(--pink);
+    color: #1a1018;
+    padding: 10px 15px;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: var(--pink2);
+}
+
+.btn-danger {
+    background: #542438;
+    color: white;
+}
+
+/* INPUTS */
+
+input, textarea {
+    width: 100%;
+    background: #100f16;
+    border: 1px solid var(--border);
+    color: white;
+    padding: 12px;
+    border-radius: 9px;
+    margin: 7px 0;
+    outline: none;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--pink);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 75px;
+}
+
+.flash {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 9px;
+    background: #302335;
+    color: var(--pink2);
+}
+
+/* STORIES */
+
+.stories-section {
+    overflow: hidden;
+}
+
+.stories-list {
+    display: flex;
+    gap: 17px;
+    overflow-x: auto;
+    padding: 10px 2px;
+}
+
+.story-item {
+    flex: 0 0 75px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.story-circle {
+    width: 67px;
+    height: 67px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, #ff65ad, #ffcf85, #a85cff);
+    margin: auto auto 7px;
+    display: block;
+}
+
+.story-circle img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--card);
+}
+
+.add-story {
+    background: #29202d;
+    color: var(--pink);
+    border: 2px dashed var(--pink);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+}
+
+.story-upload {
+    display: none;
+}
+
+.story-preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* POSTS */
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #35263a;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--pink);
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    background: #09090d;
+    border-radius: 10px;
+    margin-top: 12px;
+}
+
+.post-actions {
+    display: flex;
+    gap: 12px;
+    margin: 13px 0;
+}
+
+.post-actions button {
+    background: #29202d;
+    border: none;
+    color: var(--pink);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.comment {
+    background: #100f16;
+    border-radius: 8px;
+    padding: 9px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+/* SIDEBAR */
+
+.side-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px;
+    border-radius: 8px;
+    color: var(--muted);
+}
+
+.side-link:hover {
+    background: #29202d;
+    color: var(--pink);
+}
+
+.friend-row {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.friend-row:last-child {
+    border: none;
+}
+
+/* TABLET */
+
+@media(max-width: 1100px) {
+    .container {
+        grid-template-columns: 210px minmax(0, 1fr);
+    }
+
+    .right-sidebar {
+        display: none;
+    }
+
+    .nav-links {
+        gap: 10px;
+    }
+}
+
+/* MOBILE */
+
+@media(max-width: 700px) {
+    .navbar {
+        position: relative;
+        flex-wrap: wrap;
+        padding: 12px 15px;
+        gap: 12px;
+    }
+
+    .logo {
+        font-size: 21px;
+    }
+
+    .nav-search {
+        order: 3;
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .nav-links {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .container {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+    }
+
+    .left-sidebar, .right-sidebar {
+        display: none;
+    }
+}
+
+@media(max-width: 480px) {
+    .nav-links a:not(.profile-link) {
+        display: none;
+    }
+
+    .nav-search button {
+        padding: 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+    <a class="logo" href="{{ url_for('home') }}">
+        TAWASSOLI.
+    </a>
+
+    <form class="nav-search"
+          method="GET"
+          action="{{ url_for('search_users') }}">
+
+        <input
+            type="search"
+            name="q"
+            placeholder="🔎 Rechercher des personnes..."
+            required
+        >
+
+        <button type="submit">Search</button>
+
+    </form>
+
+<nav class="nav-links">
+    <a href="{{ url_for('home') }}">Accueil</a>
+    
+    <!-- رابط الرسائل مع الشارة الحمراء -->
+    <a href="{{ url_for('messages') }}" style="display:flex; align-items:center;">
+        💬 Messages
+        {% if unread_messages_count and unread_messages_count > 0 %}
+            <span class="badge-red">{{ unread_messages_count }}</span>
+        {% endif %}
+    </a>
+
+    <a href="#stories">Stories</a>
+    <a href="#friends">Amis</a>
+    <a href="{{ url_for('my_profile') }}" class="profile-link">Mon profil</a>
+    <a href="{{ url_for('logout') }}">Déconnexion</a>
+</nav>
+
+</header>
+
+<main class="container">
+
+    <!-- LEFT SIDEBAR -->
+
+    <aside class="left-sidebar">
+
+        <div class="card">
+            <h3>Bienvenue 👋</h3>
+
+            <div class="post-header">
+
+                {% if user.profile_picture %}
+                    <img class="avatar"
+                         src="{{ url_for('static', filename='uploads/profiles/' + user.profile_picture) }}">
+                {% else %}
+                    <div class="avatar">
+                        {{ user.username[0]|upper }}
+                    </div>
+                {% endif %}
+
+                <div>
+                    <strong>{{ user.display_name or user.username }}</strong>
+                    <div class="muted">@{{ user.username }}</div>
+                </div>
+
+            </div>
+
+            <a class="btn" href="{{ url_for('my_profile') }}">Voir mon profil</a>
+        </div>
+
+        <div class="card">
+            <h3>Navigation</h3>
+
+            <a class="side-link" href="{{ url_for('home') }}">
+                <span>🏠 Accueil</span>
+            </a>
+
+            <!-- رسائل القائمة مع الشارة الحمراء -->
+            <a class="side-link" href="{{ url_for('messages') }}">
+                <span>💬 Mes Messages</span>
+                {% if unread_messages_count and unread_messages_count > 0 %}
+                    <span class="badge-red">{{ unread_messages_count }}</span>
+                {% endif %}
+            </a>
+
+            <a class="side-link" href="#stories"><span>📸 Stories</span></a>
+            <a class="side-link" href="#posts"><span>📝 Publications</span></a>
+            <a class="side-link" href="#friends"><span>👥 Amis</span></a>
+            
+            <!-- إشعارات مع الشارة -->
+            <a class="side-link" href="#notifications">
+                <span>🔔 Notifications</span>
+                {% if unread_notifications and unread_notifications > 0 %}
+                    <span class="badge-red">{{ unread_notifications }}</span>
+                {% endif %}
+            </a>
+
+            <a class="side-link" href="{{ url_for('edit_profile') }}"><span>⚙️ Paramètres du profil</span></a>
+            <a class="side-link" href="{{ url_for('account_privacy') }}"><span>🔒 Confidentialité du compte</span></a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN FEED -->
+
+    <section>
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <!-- STORIES -->
+        <div class="card stories-section" id="stories">
+            <h3>✨ Stories</h3>
+
+            <div class="stories-list">
+                <label class="story-item" for="storyFile">
+                    <span class="story-circle add-story">+</span>
+                    <span>Ajouter</span>
+                </label>
+
+                {% for story in stories %}
+                    <a class="story-item" href="{{ url_for('view_story', story_id=story.id) }}">
+                        <span class="story-circle">
+                            {% if story.profile_picture %}
+                                <img src="{{ url_for('static', filename='uploads/profiles/' + story.profile_picture) }}">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='default-avatar.png') }}" onerror="this.style.display='none'">
+                            {% endif %}
+                        </span>
+                        <span>{{ story.display_name or story.username }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+
+            <form method="POST" action="{{ url_for('create_story') }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="file" id="storyFile" name="media" accept="image/*,video/mp4,video/webm" class="story-upload" required>
+                <div id="storyPreview"></div>
+                <button class="btn" type="submit" style="margin-top:12px;">
+                    Publier ma Story
+                </button>
+                <p class="muted">Photo ou vidéo • Disponible pendant 24 heures.</p>
+            </form>
+        </div>
+
+        <!-- CREATE POST -->
+        <div class="card">
+            <h3>Créer une publication</h3>
+            <form method="POST" action="{{ url_for('create_post') }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <textarea name="content" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
+                <input type="file" name="image" accept="image/*">
+                <button class="btn" type="submit">Publier</button>
+            </form>
+        </div>
+
+        <!-- POSTS -->
+        <div id="posts">
+            {% for post in posts %}
+                <article class="card">
+                    <div class="post-header">
+                        {% if post.profile_picture %}
+                            <img class="avatar" src="{{ url_for('static', filename='uploads/profiles/' + post.profile_picture) }}">
+                        {% else %}
+                            <div class="avatar">{{ post.username[0]|upper }}</div>
+                        {% endif %}
+
+                        <div>
+                            <strong>
+                                <a href="{{ url_for('profile', user_id=post.user_id) }}">
+                                    {{ post.display_name or post.username }}
+                                </a>
+                            </strong>
+                            <div class="muted">@{{ post.username }} • {{ post.created_at }}</div>
+                        </div>
+                    </div>
+
+                    {% if post.content %}
+                        <p style="white-space:pre-wrap;">{{ post.content }}</p>
+                    {% endif %}
+
+                    {% if post.image_filename %}
+                        <img class="post-image" src="{{ url_for('static', filename='uploads/posts/' + post.image_filename) }}">
+                    {% endif %}
+
+                    <div class="muted">
+                        ❤️ {{ post.likes_count }} J'aime • 💬 {{ post.comments_count }} Commentaires
+                    </div>
+
+                    <div class="post-actions">
+                        <form method="POST" action="{{ url_for('like_post', post_id=post.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit">
+                                {% if post.liked_by_me %}❤️ Aimé{% else %}🤍 J'aime{% endif %}
+                            </button>
+                        </form>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('add_comment', post_id=post.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="text" name="content" placeholder="Écrire un commentaire..." required>
+                        <button class="btn" type="submit">Commenter</button>
+                    </form>
+
+                    {% for comment in post.comments %}
+                        <div class="comment">
+                            <strong>{{ comment.display_name or comment.username }}</strong>
+                            <p>{{ comment.content }}</p>
+                            <span class="muted">{{ comment.created_at }}</span>
+                        </div>
+                    {% endfor %}
+
+                    {% if post.user_id == user.id %}
+                        <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette publication ?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="btn btn-danger" type="submit" style="margin-top:12px;">
+                                Supprimer
+                            </button>
+                        </form>
+                    {% endif %}
+                </article>
+            {% else %}
+                <div class="card">
+                    <h3>Aucune publication pour le moment.</h3>
+                    <p class="muted">Sois le premier à partager quelque chose !</p>
+                </div>
+            {% endfor %}
+        </div>
+
+    </section>
+
+    <!-- RIGHT SIDEBAR -->
+
+    <aside class="right-sidebar">
+
+        <!-- FRIENDS -->
+        <div class="card" id="friends">
+            <h3>👥 Mes amis</h3>
+
+            <form method="POST" action="{{ url_for('add_friend') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+                <button class="btn" type="submit">Ajouter</button>
+            </form>
+
+            {% for friend in friends %}
+                <div class="friend-row">
+                    <strong>{{ friend.display_name or friend.username }}</strong><br>
+                    <a class="muted" href="{{ url_for('chat', friend_id=friend.id) }}">💬 Envoyer un message</a><br>
+                    <a class="muted" href="{{ url_for('profile', user_id=friend.id) }}">Voir le profil</a>
+                </div>
+            {% else %}
+                <p class="muted">Tu n'as pas encore d'amis.</p>
+            {% endfor %}
+        </div>
+
+        <!-- INCOMING FRIEND REQUESTS -->
+        <div class="card">
+            <h3>Demandes reçues</h3>
+
+            {% for req in incoming_requests %}
+                <div class="friend-row">
+                    <strong>@{{ req.sender_username }}</strong>
+                    <form method="POST" action="{{ url_for('accept_friend_request', request_id=req.request_id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn" type="submit">Accepter</button>
+                    </form>
+
+                    <form method="POST" action="{{ url_for('reject_friend_request', request_id=req.request_id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-danger" type="submit">Refuser</button>
+                    </form>
+                </div>
+            {% else %}
+                <p class="muted">Aucune demande reçue.</p>
+            {% endfor %}
+        </div>
+
+        <!-- OUTGOING FRIEND REQUESTS -->
+        <div class="card">
+            <h3>Demandes envoyées</h3>
+
+            {% for req in outgoing_requests %}
+                <div class="friend-row">
+                    @{{ req.receiver_username }}
+                    <div class="muted">En attente...</div>
+                </div>
+            {% else %}
+                <p class="muted">Aucune demande envoyée.</p>
+            {% endfor %}
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="card" id="notifications">
+            <h3>🔔 Notifications ({{ unread_notifications }})</h3>
+
+            <form method="POST" action="{{ url_for('mark_all_notifications_read') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn" type="submit">Tout marquer comme lu</button>
+            </form>
+
+            {% for notification in notifications %}
+                <div class="friend-row">
+                    <p>{{ notification.message }}</p>
+                    <span class="muted">{{ notification.created_at }}</span>
+
+                    {% if not notification.is_read %}
+                        <form method="POST" action="{{ url_for('mark_notification_read', notification_id=notification.id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button class="btn" type="submit">Marquer comme lu</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="muted">Aucune notification.</p>
+            {% endfor %}
+        </div>
+
+    </aside>
+
+</main>
+
+<script>
+const storyFile = document.getElementById("storyFile");
+const storyPreview = document.getElementById("storyPreview");
+
+storyFile.addEventListener("change", function () {
+    storyPreview.innerHTML = "";
+    const file = this.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    let element;
+
+    if (file.type.startsWith("video/")) {
+        element = document.createElement("video");
+        element.controls = true;
+    } else if (file.type.startsWith("image/")) {
+        element = document.createElement("img");
+    } else {
+        storyPreview.textContent = "Format non autorisé.";
+        return;
+    }
+
+    element.src = url;
+    element.className = "story-preview";
+    storyPreview.appendChild(element);
+});
+</script>
+
+</body>
+</html>

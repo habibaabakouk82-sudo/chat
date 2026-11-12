@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paramètres | TAWASSOLI</title>
+
+<style>
+:root {
+    --pink: #ff91c8;
+    --bg: #0b0b10;
+    --card: #17151e;
+    --text: #f4f4f8;
+    --muted: #aaa4b5;
+}
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 20px 7%;
+    border-bottom: 1px solid #292530;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: var(--pink);
+    font-size: 25px;
+    font-weight: bold;
+}
+
+a { text-decoration: none; }
+
+.back { color: var(--pink); }
+
+.container {
+    max-width: 850px;
+    margin: 35px auto;
+    padding: 0 18px;
+}
+
+h1 { margin-bottom: 8px; }
+
+.subtitle {
+    color: var(--muted);
+    margin-bottom: 30px;
+}
+
+.section-title {
+    color: var(--pink);
+    font-size: 13px;
+    margin: 28px 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.setting {
+    background: var(--card);
+    padding: 19px;
+    margin-bottom: 10px;
+    border-radius: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #292530;
+    transition: .2s;
+}
+
+.setting:hover {
+    border-color: var(--pink);
+    transform: translateY(-2px);
+}
+
+.setting h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: var(--text);
+}
+
+.setting p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.arrow {
+    color: var(--pink);
+    font-size: 22px;
+}
+
+.danger { color: #ff6262; }
+
+footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 30px;
+    font-size: 12px;
+}
+
+@media(max-width: 500px) {
+    header { padding: 18px; }
+    .setting { padding: 15px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">TAWASSOLI.</div>
+    <a class="back" href="{{ url_for('home') }}">← Retour</a>
+</header>
+
+<main class="container">
+
+    <h1>Paramètres ⚙️</h1>
+
+    <p class="subtitle">
+        Gérez votre compte et personnalisez votre expérience.
+    </p>
+
+    <div class="section-title">Mon compte</div>
+
+    <a href="{{ url_for('account_privacy') }}">
+        <div class="setting">
+            <div>
+                <h3>🔒 Confidentialité du compte</h3>
+                <p>Choisir entre un compte public et privé.</p>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+    </a>
+
+    <a href="{{ url_for('edit_profile') }}">
+        <div class="setting">
+            <div>
+                <h3>👤 Informations personnelles</h3>
+                <p>Modifier votre nom, bio et photo de profil.</p>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+    </a>
+
+    <a href="{{ url_for('change_password') }}">
+        <div class="setting">
+            <div>
+                <h3>🔑 Mot de passe</h3>
+                <p>Modifier le mot de passe de votre compte.</p>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+    </a>
+
+    <div class="section-title">Confidentialité et sécurité</div>
+
+    <a href="{{ url_for('account_security') }}">
+        <div class="setting">
+            <div>
+                <h3>🛡️ Sécurité du compte</h3>
+                <p>Consulter les connexions et protéger votre compte.</p>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+    </a>
+
+    <!-- تم ربط الحسابات المحظورة مباشرة بصفحة blocked_accounts -->
+    <a href="{{ url_for('blocked_accounts') }}">
+        <div class="setting">
+            <div>
+                <h3>🚫 Comptes bloqués</h3>
+                <p>Consulter et gérer les utilisateurs bloqués.</p>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+    </a>
+
+    <div class="section-title">Préférences</div>
+
+    <div class="setting"
+         onclick="alert('Les notifications personnalisées seront développées prochainement.')">
+        <div>
+            <h3>🔔 Notifications</h3>
+            <p>Choisir les notifications que vous recevez.</p>
+        </div>
+        <span class="arrow">›</span>
+    </div>
+
+    <div class="setting"
+         onclick="alert('La gestion des contacts sera développée prochainement.')">
+        <div>
+            <h3>👥 Amis et contacts</h3>
+            <p>Gérer les demandes et les relations.</p>
+        </div>
+        <span class="arrow">›</span>
+    </div>
+
+    <div class="setting"
+         onclick="alert('Les paramètres des publications seront développés prochainement.')">
+        <div>
+            <h3>📝 Publications et commentaires</h3>
+            <p>Gérer vos publications et interactions.</p>
+        </div>
+        <span class="arrow">›</span>
+    </div>
+
+    <div class="setting"
+         onclick="alert('Les thèmes et langues seront développés prochainement.')">
+        <div>
+            <h3>🎨 Apparence et langue</h3>
+            <p>Personnaliser le thème et la langue.</p>
+        </div>
+        <span class="arrow">›</span>
+    </div>
+
+    <div class="section-title">À propos</div>
+
+    <div class="setting"
+         onclick="alert('TAWASSOLI — Connect Together | Version 1.0')">
+        <div>
+            <h3>ℹ️ À propos de TAWASSOLI</h3>
+            <p>Version et informations de l'application.</p>
+        </div>
+        <span class="arrow">›</span>
+    </div>
+
+    <a href="{{ url_for('logout') }}"
+       onclick="return confirm('Voulez-vous vraiment vous déconnecter ?')">
+        <div class="setting">
+            <div>
+                <h3 class="danger">🚪 Déconnexion</h3>
+                <p>Se déconnecter de votre compte.</p>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+    </a>
+
+</main>
+
+<footer>TAWASSOLI © 2026 — Connect Together</footer>
+
+</body>
+</html>

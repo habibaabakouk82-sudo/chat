@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sécurité du compte | TAWASSOLI</title>
+
+
+<style>
+    :root {
+        --pink: #ff91c8;
+        --pink2: #ffb6dc;
+        --bg: #0b0b10;
+        --card: #17151e;
+        --text: #ffffff;
+        --muted: #aaa3b5;
+        --border: #302a38;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 25px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        max-width: 850px;
+        margin: 35px auto;
+    }
+
+    .back {
+        color: var(--pink);
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    h1 {
+        margin-top: 30px;
+        color: var(--pink);
+    }
+
+    .description {
+        color: var(--muted);
+        line-height: 1.6;
+    }
+
+    .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        padding: 22px;
+        margin-top: 22px;
+    }
+
+    .session {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 18px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .session:last-child {
+        border-bottom: none;
+    }
+
+    .device {
+        font-size: 17px;
+        font-weight: bold;
+    }
+
+    .details {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+        margin-top: 8px;
+    }
+
+    .current {
+        display: inline-block;
+        color: var(--pink);
+        font-size: 12px;
+        margin-top: 8px;
+    }
+
+    button {
+        border: none;
+        border-radius: 9px;
+        padding: 11px 16px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .danger {
+        background: #42202d;
+        color: #ff9dbb;
+    }
+
+    .danger:hover {
+        background: #663044;
+    }
+
+    .logout-all {
+        background: var(--pink);
+        color: #21101a;
+        margin-top: 15px;
+    }
+
+    .logout-all:hover {
+        background: var(--pink2);
+    }
+
+    .empty {
+        color: var(--muted);
+        padding: 15px 0;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 15px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .session {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="{{ url_for('settings') }}" class="back">
+    ← Retour aux paramètres
+</a>
+
+<h1>🔐 Sécurité du compte</h1>
+
+<p class="description">
+    Consultez les sessions connectées à votre compte TAWASSOLI.
+    Vous pouvez déconnecter les appareils que vous ne reconnaissez pas.
+</p>
+
+<div class="card">
+
+    <h2>📱 Appareils connectés</h2>
+
+    {% if sessions %}
+
+        {% for item in sessions %}
+
+            <div class="session">
+
+                <div>
+                    <div class="device">
+                        💻 {{ item.device_name }}
+                    </div>
+
+                    <div class="details">
+                        Adresse IP : {{ item.ip_address or "Inconnue" }}<br>
+                        Connexion : {{ item.created_at }}<br>
+                        Dernière activité : {{ item.last_seen }}
+                    </div>
+
+                    {% if item.session_token == current_token %}
+                        <span class="current">
+                            ● Cet appareil (session actuelle)
+                        </span>
+                    {% endif %}
+                </div>
+
+                {% if item.session_token != current_token %}
+
+                    <form method="POST"
+                          action="{{ url_for('logout_one_session', session_id=item.id) }}"
+                          onsubmit="return confirm('Déconnecter cette session ?');">
+
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <button type="submit" class="danger">
+                            Déconnecter
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p class="empty">
+            Aucune session active trouvée.
+        </p>
+
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <h2>🚪 Déconnexion générale</h2>
+
+    <p class="description">
+        Cette action déconnectera votre compte de tous les appareils,
+        y compris celui que vous utilisez actuellement.
+    </p>
+
+    <form method="POST"
+          action="{{ url_for('logout_all_sessions') }}"
+          onsubmit="return confirm('Voulez-vous vraiment déconnecter toutes les sessions ?');">
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <button type="submit" class="logout-all">
+            Déconnecter tous les appareils
+        </button>
+
+    </form>
+
+</div>
+
+
+</div>
+
+</body>
+</html>

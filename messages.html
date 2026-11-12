@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TAWASSOLI | Messages</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b0b10;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: #17151e;
+            padding: 20px;
+            border-bottom: 1px solid #302635;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            color: #ff91c8;
+            margin: 0;
+        }
+
+        a {
+            color: #ff91c8;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 30px auto;
+            padding: 15px;
+        }
+
+        .title {
+            margin-bottom: 20px;
+        }
+
+        .title h2 {
+            margin-bottom: 5px;
+        }
+
+        .title p {
+            color: #aaa0ad;
+            font-size: 14px;
+        }
+
+        .conversation {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: #17151e;
+            border: 1px solid #302635;
+            border-radius: 14px;
+            transition: 0.2s;
+        }
+
+        .conversation:hover {
+            background: #211d2a;
+            border-color: #ff91c8;
+        }
+
+        .avatar {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #302435;
+            flex-shrink: 0;
+        }
+
+        .avatar-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff91c8;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .conversation-info h3 {
+            margin: 0 0 7px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .last-message {
+            color: #aaa0ad;
+            font-size: 13px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .arrow {
+            color: #ff91c8;
+            font-size: 22px;
+        }
+
+        .empty {
+            background: #17151e;
+            border: 1px solid #302635;
+            border-radius: 14px;
+            padding: 35px 20px;
+            text-align: center;
+        }
+
+        .empty h3 {
+            color: #ff91c8;
+        }
+
+        .empty p {
+            color: #aaa0ad;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 11px 18px;
+            background: #ff91c8;
+            color: #17151e;
+            border-radius: 9px;
+            font-weight: bold;
+        }
+
+        @media(max-width: 600px) {
+            .container {
+                margin: 15px auto;
+            }
+
+            header {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h2>TAWASSOLI.</h2>
+        <a href="{{ url_for('home') }}">← Accueil</a>
+    </header>
+
+    <main class="container">
+
+        <div class="title">
+            <h2>💬 Mes Messages</h2>
+            <p>Retrouve toutes tes conversations privées.</p>
+        </div>
+
+        {% for conversation in conversations %}
+
+            <a class="conversation"
+               href="{{ url_for('chat', friend_id=conversation.friend_id) }}">
+
+                {% if conversation.profile_picture %}
+
+                    <img
+                        class="avatar"
+                        src="{{ url_for('static', filename='uploads/profiles/' + conversation.profile_picture) }}"
+                        alt="Photo de profil"
+                    >
+
+                {% else %}
+
+                    <div class="avatar avatar-placeholder">
+                        {{ (conversation.display_name or conversation.username)[0]|upper }}
+                    </div>
+
+                {% endif %}
+
+                <div class="conversation-info">
+
+                    <h3>
+                        {{ conversation.display_name or conversation.username }}
+                    </h3>
+
+                    <div class="last-message">
+                        {{ conversation.last_message }}
+                    </div>
+
+                </div>
+
+                <span class="arrow">›</span>
+
+            </a>
+
+        {% else %}
+
+            <div class="empty">
+
+                <h3>Aucune conversation</h3>
+
+                <p>
+                    Tu n'as pas encore envoyé ou reçu de messages.
+                </p>
+
+                <a class="home-btn" href="{{ url_for('home') }}">
+                    Trouver des amis
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </main>
+
+</body>
+</html>
